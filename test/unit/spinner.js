@@ -16,59 +16,63 @@
 
 describe('MaterialSpinner', function () {
 
+  function createSpinner() {
+    var layerHtml = '<div class="mdl-spinner__circle-clipper mdl-spinner__left">' +
+        '<div class="mdl-spinner__circle"></div>' +
+        '</div>' +
+        '<div class="mdl-spinner__gap-patch">' +
+        '<div class="mdl-spinner__circle"></div>' +
+        '</div>' +
+        '<div class="mdl-spinner__circle-clipper mdl-spinner__right">' +
+        '<div class="mdl-spinner__circle"></div>' +
+        '</div>';
+
+    var spinner = document.createElement('div');
+    spinner.className = 'mdl-spinner';
+    for (var i = 0; i < 4; i++) {
+      var layer = document.createElement('div');
+      layer.className = 'mdl-spinner__layer';
+      layer.innerHTML = layerHtml;
+    }
+
+    return spinner;
+  }
+
   it('should be globally available', function () {
     expect(MaterialSpinner).to.be.a('function');
   });
 
   it('should upgrade successfully', function () {
-    var el = document.createElement('div');
-    componentHandler.upgradeElement(el, 'MaterialSpinner');
-    expect($(el)).to.have.data('upgraded', ',MaterialSpinner');
-  });
-
-  it('should be a widget', function () {
-    var el = document.createElement('div');
-    componentHandler.upgradeElement(el, 'MaterialSpinner');
-    expect(el.MaterialSpinner).to.be.a('object');
+    var el = createSpinner();
+    var spinner = new MaterialSpinner(el);
+    expect(spinner).to.be.an.instanceof(MaterialSpinner);
+    expect(el.classList.contains('mdl-spinner--is-upgraded')).to.be.true;
   });
 
   it('should have public methods available', function() {
-    var el = document.createElement('div');
-    componentHandler.upgradeElement(el, 'MaterialSpinner');
+    var el = createSpinner();
+    var spinner = new MaterialSpinner(el);
     var methods = [
       'start',
       'stop',
     ];
     methods.forEach(function(item) {
-      expect(el.MaterialSpinner[item]).to.be.a('function');
+      expect(spinner[item]).to.be.a('function');
     });
   });
 
   it('should start successfully', function () {
-    var el = document.createElement('div');
-    componentHandler.upgradeElement(el, 'MaterialSpinner');
-    el.MaterialSpinner.start();
-    expect($(el)).to.have.class('is-active');
+    var el = createSpinner();
+    var spinner = new MaterialSpinner(el);
+    spinner.start();
+    expect(el.classList.contains('is-active')).to.be.true;
   });
 
   it('should stop successfully', function () {
-    var el = document.createElement('div');
-    componentHandler.upgradeElement(el, 'MaterialSpinner');
-    el.MaterialSpinner.start();
-    el.MaterialSpinner.stop();
-    expect($(el)).to.not.have.class('is-active');
+    var el = createSpinner();
+    var spinner = new MaterialSpinner(el);
+    spinner.start();
+    spinner.stop();
+    expect(el.classList.contains('is-active')).to.be.false;
   });
-
-  it('should create layers successfully', function () {
-    var el = document.createElement('div');
-    componentHandler.upgradeElement(el, 'MaterialSpinner');
-    var html = el.innerHTML;
-    expect(html).to.contain('mdl-spinner__layer');
-    expect(html).to.contain('mdl-spinner__layer-1');
-    expect(html).to.contain('mdl-spinner__layer-2');
-    expect(html).to.contain('mdl-spinner__layer-3');
-    expect(html).to.contain('mdl-spinner__layer-4');
-    expect(html).to.contain('mdl-spinner__circle');
-  });
-
 });
